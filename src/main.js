@@ -9,13 +9,15 @@ k.onClick(() => k.addKaboom(k.mousePos()));
 
 kaboom({
   background: [255, 64, 0],
-  scale: 0.9, // Adjust this value to zoom out (less than 1) or zoom in (greater than 1)
+  scale: 0.5, // Adjust this value to zoom out (less than 1) or zoom in (greater than 1)
 });
 
 loadSprite("bag", "/sprites/bag.png");
 loadSprite("btfly", "/sprites/btfly.png");
+loadSprite("table", "/sprites/table.png");
+loadSprite("apple", "/sprites/apple.png");
 loadSprite("ghosty", "/sprites/ghosty.png");
-loadSprite("grass", "/sprites/grass.png");
+loadSprite("brick", "/sprites/brick.png");
 loadSprite("steel", "/sprites/steel.png");
 loadSprite("door", "/sprites/door.png");
 loadSprite("key", "/sprites/key.png");
@@ -38,7 +40,7 @@ export async function fetchHumans() {
 }
 
 scene("main", async (levelIdx) => {
-  const SPEED = 320;
+  const SPEED = 1020;
 
   // Fetch characters from the server
   const charactersList = await fetchHumans();
@@ -58,40 +60,43 @@ scene("main", async (levelIdx) => {
   // level layouts
   const levels = [
     [
-      "==================",
-      "=        |       =",
-      "= === =====  b   =",
-      "=   = =     ===  =",
-      "= a = = c =      =",
-      "= === =   =====  =",
-      "=     = =        =",
-      "= === = =======  =",
-      "=   =            =",
-      "= = ===========  =",
-      "= =      $       =",
-      "=   ===== =====  =",
-      "= d    @=     e  =",
-      "==================",
+      "=======================================",
+      "|         =     = =        =          =",
+      "=    =       c             =          =",
+      "================      ==   ==  ========",
+      "= -- = -- = -- =      ==              =",
+      "=    =    =    =                 =   -=",
+      "=    =    =    =         b       =  --=",
+      "===  ===  ===  ===         ============",
+      "=                =                    =",
+      "=                ====  e     ---------=",
+      "=------  ---     ====                 =",
+      "=                            ---------=",
+      "=--  -------                          =",
+      "=              =                      =",
+      "=------  ---   =                      =",
+      "=              =      =       =    d  =",
+      "=--  -------   =-     =       =--     =",
+      "=              =- c   =   --  =---$   =",
+      "===================   =================",
+      "                    @                  ",
     ],
     [
-      "===|============",
-      "=              =",
-      "=         b    =",
-      "= $            =",
-      "=     a        =",
-      "=              =",
-      "=    @      c  =",
-      "=              =",
-      "================",
-    ],
-    [
-      "--------",
-      "-      -",
-      "-   $  -",
-      "|      -",
-      "-    b -",
-      "-  @   -",
-      "--------",
+      "==========================================",
+      "=-----------       =                     =",
+      "=                  =                     =",
+      "=-----------       =               =     =",
+      "=                  =               =     =",
+      "=-----------       ==========      =     =",
+      "=   $              =        =      =======",
+      "=             c    =        =      =======",
+      "=                  ==========      =     =",
+      "=======                            =     =",
+      "=                                        =",
+      "=       =          =                  ---=",
+      "=       =          ======                =",
+      "=       =         @ ==========        ---=",
+      "=================|========================",
     ],
   ];
 
@@ -101,13 +106,13 @@ scene("main", async (levelIdx) => {
     pos: vec2(64, 64),
     tiles: {
       "=": () => [
-        sprite("grass"),
+        sprite("brick"),
         area(),
         body({ isStatic: true }),
         anchor("center"),
       ],
       "-": () => [
-        sprite("steel"),
+        sprite("table"),
         area(),
         body({ isStatic: true }),
         anchor("center"),
