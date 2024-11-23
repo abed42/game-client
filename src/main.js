@@ -8,7 +8,8 @@ k.onClick(() => k.addKaboom(k.mousePos()));
 // simple rpg style walk and talk
 
 kaboom({
-  background: [0, 0, 0],
+  background: [255, 64, 0],
+  scale: 0.9, // Adjust this value to zoom out (less than 1) or zoom in (greater than 1)
 });
 
 loadSprite("bag", "/sprites/bag.png");
@@ -48,15 +49,30 @@ scene("main", async (levelIdx) => {
   charactersList.forEach((char) => {
     characters[char.char] = {
       id: char.id,
+      name: char.name,
       sprite: char.sprite,
       msg: "Hi Bean! You should get that key!",
     };
   });
 
-  console.log(characters);
-
   // level layouts
   const levels = [
+    [
+      "==================",
+      "=        |       =",
+      "= === =====  b   =",
+      "=   = =     ===  =",
+      "= a = = c =      =",
+      "= === =   =====  =",
+      "=     = =        =",
+      "= === = =======  =",
+      "=   =            =",
+      "= = ===========  =",
+      "= =      $       =",
+      "=   ===== =====  =",
+      "= d    @=     e  =",
+      "==================",
+    ],
     [
       "===|============",
       "=              =",
@@ -110,8 +126,6 @@ scene("main", async (levelIdx) => {
     // symbole not defined above and is supposed to return what that symbol
     // means
     wildcardTile(ch) {
-      console.log(ch);
-
       const char = characters[ch];
 
       if (char) {
@@ -121,7 +135,7 @@ scene("main", async (levelIdx) => {
           body({ isStatic: true }),
           anchor("center"),
           "character",
-          { msg: char.msg },
+          { msg: char.msg, name: char.name },
         ];
       }
     },
@@ -194,7 +208,9 @@ scene("main", async (levelIdx) => {
 
   // talk on touch
   player.onCollide("character", (ch) => {
-    dialog.say(ch.msg);
+    console.log(ch);
+
+    dialog.say(`${ch.name}: ${ch.msg}`);
   });
 
   const dirs = {
