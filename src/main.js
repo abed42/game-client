@@ -8,10 +8,11 @@ k.onClick(() => k.addKaboom(k.mousePos()));
 // simple rpg style walk and talk
 
 kaboom({
-  background: [74, 48, 82],
+  background: [0, 0, 0],
 });
 
 loadSprite("bag", "/sprites/bag.png");
+loadSprite("btfly", "/sprites/btfly.png");
 loadSprite("ghosty", "/sprites/ghosty.png");
 loadSprite("grass", "/sprites/grass.png");
 loadSprite("steel", "/sprites/steel.png");
@@ -19,31 +20,51 @@ loadSprite("door", "/sprites/door.png");
 loadSprite("key", "/sprites/key.png");
 loadSprite("bean", "/sprites/bean.png");
 
-scene("main", (levelIdx) => {
+const API_URL = "http://localhost:3000";
+
+export async function fetchHumans() {
+  try {
+    const response = await fetch(`${API_URL}/humans`);
+    const data = await response.json();
+    if (data.success) {
+      return data.data;
+    }
+    throw new Error("Failed to fetch characters");
+  } catch (error) {
+    console.error("Error fetching characters:", error);
+    return [];
+  }
+}
+
+scene("main", async (levelIdx) => {
   const SPEED = 320;
 
-  // character dialog data
-  const characters = {
-    a: {
-      sprite: "bag",
+  // Fetch characters from the server
+  const charactersList = await fetchHumans();
+
+  // Convert characters array to the format your game expects
+  const characters = {};
+
+  charactersList.forEach((char) => {
+    characters[char.char] = {
+      id: char.id,
+      sprite: char.sprite,
       msg: "Hi Bean! You should get that key!",
-    },
-    b: {
-      sprite: "ghosty",
-      msg: "Who are you? You can see me??",
-    },
-  };
+    };
+  });
+
+  console.log(characters);
 
   // level layouts
   const levels = [
     [
       "===|============",
       "=              =",
-      "=              =",
+      "=         b    =",
       "= $            =",
       "=     a        =",
       "=              =",
-      "=    @         =",
+      "=    @      c  =",
       "=              =",
       "================",
     ],
@@ -89,7 +110,10 @@ scene("main", (levelIdx) => {
     // symbole not defined above and is supposed to return what that symbol
     // means
     wildcardTile(ch) {
+      console.log(ch);
+
       const char = characters[ch];
+
       if (char) {
         return [
           sprite(char.sprite),
